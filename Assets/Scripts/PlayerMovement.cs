@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -10,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     
     //Jump
     [SerializeField]float jumpForce;
+    [SerializeField] bool isJumping;
     
     
     void Start()
@@ -23,10 +25,26 @@ public class PlayerMovement : MonoBehaviour
         rb2d.linearVelocity = new Vector2(move * speed, rb2d.linearVelocity.y);
         
         //Jump
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && !isJumping)
         {
             rb2d.AddForce(new Vector2 (rb2d.linearVelocity.x, jumpForce ) );
             Debug.Log("Jump!"); //for debugging
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            isJumping = false;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            isJumping = true;
         }
     }
 }
